@@ -43,6 +43,10 @@ li.task-container.complete span.ok {
   color: green;
 }
 
+li.task-container span.indent {
+  width: 36px;
+}
+
 input.task {
   background-color: #FAFAFA;
   height: 34px;

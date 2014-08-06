@@ -7,6 +7,7 @@ App.View.Task = Backbone.View.extend({
     'keydown': 'handleKeyboard'
   },
   template: _.template('<form><span class=" ok"><span class="glyphicon glyphicon-ok-circle"></span></span><input class="task" type="text" value="<%= description %>"/></form>'),
+  indentTemplate: _.template('<span class="indent"></span>'),
   tagName: 'li',
   className: function() {
     var classes = 'task-container';
@@ -28,10 +29,32 @@ App.View.Task = Backbone.View.extend({
     switch (e.keyCode) {
       case App.KeyCodes.enter:
         e.preventDefault();
-        break;
+      break;
       case App.KeyCodes.tab:
         e.preventDefault();
-        break;
+        console.log(e);
+        if (e.shiftKey) {
+          this.decreaseIndent();
+        } else {
+          this.increaseIndent();
+        }
+      break;
+      case App.KeyCodes.c:
+        if (e.ctrlKey) {
+          e.preventDefault();
+          this.toggleComplete();
+        }
+      break;
+      case App.KeyCodes.n:
+      break;
+      case App.KeyCodes.p:
+      break;
     }
+  },
+  increaseIndent: function() {
+    this.$el.find('form').prepend(this.indentTemplate());
+  },
+  decreaseIndent: function() {
+    this.$el.find('span.indent:first').remove();
   }
 });
