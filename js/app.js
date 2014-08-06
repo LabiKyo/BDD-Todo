@@ -23,5 +23,14 @@ window.App = new (Backbone.View.extend({
   },
   Model: {},
   Collection: {},
-  View: {}
+  View: {},
+  KeyCodes: {
+    tab: 9,
+    enter: 13,
+    shift: 16,
+    control: 17,
+    c: 67,
+    n: 78,
+    p: 80
+  }
 }))({el: document.body});

@@ -1,25 +1,37 @@
 App.View.Task = Backbone.View.extend({
   initialize: function() {
-    this.listenTo(this.model, 'change', this.render);
   },
   events: {
-    'click span.ok': 'toggleComplete'
+    'click span.ok': 'toggleComplete',
+    'submit': function(e) { e.preventDefault(); },
+    'keydown': 'handleKeyboard'
   },
-  template: _.template('<form><span class="glyphicon glyphicon-ok-circle ok"></span><input class="task" type="text" value="<%= description %>"/></form>'),
+  template: _.template('<form><span class=" ok"><span class="glyphicon glyphicon-ok-circle"></span></span><input class="task" type="text" value="<%= description %>"/></form>'),
   tagName: 'li',
-  className: 'task-container clearfix',
-  render: function() {
-    var attrs = this.model.attributes;
-    if (attrs.complete) {
-      this.$el.addClass('complete');
-    } else {
-      this.$el.removeClass('complete');
+  className: function() {
+    var classes = 'task-container';
+    if (this.model.get('complete')) {
+      classes += ' complete';
     }
-    this.$el.html(this.template(attrs));
+    return classes;
+  },
+  render: function() {
+    this.$el.html(this.template(this.model.attributes));
     return this;
   },
 
-  toggleComplete: function(e) {
+  toggleComplete: function() {
     this.model.set('complete', !this.model.get('complete'));
+    this.$el.toggleClass('complete').find('input').focus();
+  },
+  handleKeyboard: function(e) {
+    switch (e.keyCode) {
+      case App.KeyCodes.enter:
+        e.preventDefault();
+        break;
+      case App.KeyCodes.tab:
+        e.preventDefault();
+        break;
+    }
   }
 });

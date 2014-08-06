@@ -1,3 +1,6 @@
+h1 {
+  text-shadow: 0px -1px 1px rgba(0,0,0,0.6);
+}
 #app {
   min-height: 700px;
   color: #B3292F;
@@ -12,21 +15,28 @@
 }
 
 li.task-container {
-  clear: both;
   color: #545454;
   border-bottom: 1px dotted #BFBFBF;
 }
+
 li.task-container:last-of-type {
   border-bottom: 0 none;
 }
 
+li.task-container form {
+  display: flex;
+  display: -webkit-flex;
+}
+
 span.ok {
-  float: left;
-  width: 28px;
+  width: 32px;
   padding: 0 7px;
   height: 34px;
   line-height: 34px;
   color: #DDD;
+  border-right: 4px double #F9C1CA;
+  display: inline-block;
+  cursor: pointer;
 }
 
 li.task-container.complete span.ok {
@@ -37,11 +47,9 @@ input.task {
   background-color: #FAFAFA;
   height: 34px;
   border: 0 none;
-  border-left: 4px double #F9C1CA;
-  display: block;
   padding: 0 10px;
-  margin-left: 28px;
-  width: 1120px;
+  flex: 1;
+  -webkit-flex: 1;
 }
 
 li.task-container.complete input.task {

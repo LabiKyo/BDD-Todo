@@ -1,5 +1,5 @@
 App.Model.Task = Backbone.Model.extend({
   initialize: function(options) {
-    this.complete = options.complete || false;
+    this.set('complete', options.complete || false);
   }
 });
