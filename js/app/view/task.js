@@ -46,8 +46,16 @@ App.View.Task = Backbone.View.extend({
         }
       break;
       case App.KeyCodes.n:
+        if (e.ctrlKey) {
+          e.preventDefault();
+          $('input:focus').closest('li.task-container').next().find('input').focus();
+        }
       break;
       case App.KeyCodes.p:
+        if (e.ctrlKey) {
+          e.preventDefault();
+          $('input:focus').closest('li.task-container').prev().find('input').focus();
+        }
       break;
     }
   },
