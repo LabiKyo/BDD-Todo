@@ -1,7 +1,7 @@
 App.Model.Task = Backbone.Model.extend({
   initialize: function(options) {
     this.set('complete', options.complete || false);
-    this.set('indent', options.indent || 0);
+    this.set('indent', options.indent || 0); // REVIEW: may not be useful
     this.children = [];
   },
   add: function(task) {

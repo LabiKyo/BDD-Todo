@@ -17,4 +17,8 @@ App.View.Task = Backbone.View.extend({
     this.$el.html(this.template(this.model.attributes));
     return this;
   },
+  focus: function() {
+    this.$el.find('input').focus();
+    return this;
+  }
 });
