@@ -1,6 +1,7 @@
 h1 {
   text-shadow: 0px -1px 1px rgba(0,0,0,0.6);
 }
+
 #app {
   min-height: 700px;
   color: #B3292F;
@@ -38,13 +39,23 @@ span.ok {
   display: inline-block;
   cursor: pointer;
 }
+.indent-1 {
+  width: 32px;
+}
+
+.indent-2 {
+  width: 64px;
+}
+
+.indent-3 {
+  width: 96px;
+}
+.indent-4 {
+  width: 128px;
+}
 
 li.task-container.complete span.ok {
   color: green;
-}
-
-li.task-container span.indent {
-  width: 36px;
 }
 
 input.task {

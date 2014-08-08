@@ -1,13 +1,10 @@
 App.View.Task = Backbone.View.extend({
   initialize: function() {
+    this.children = [];
   },
   events: {
-    'click span.ok': 'toggleComplete',
-    'submit': function(e) { e.preventDefault(); },
-    'keydown': 'handleKeyboard'
   },
-  template: _.template('<form><span class=" ok"><span class="glyphicon glyphicon-ok-circle"></span></span><input class="task" type="text" value="<%= description %>"/></form>'),
-  indentTemplate: _.template('<span class="indent"></span>'),
+  template: _.template('<form><span class="indent-<%= indent %>"></span><span class="ok"><span class="glyphicon glyphicon-ok-circle"></span></span><input class="task" type="text" value="<%= description %>"/></form>'),
   tagName: 'li',
   className: function() {
     var classes = 'task-container';
@@ -20,49 +17,4 @@ App.View.Task = Backbone.View.extend({
     this.$el.html(this.template(this.model.attributes));
     return this;
   },
-
-  toggleComplete: function() {
-    this.model.set('complete', !this.model.get('complete'));
-    this.$el.toggleClass('complete').find('input').focus();
-  },
-  handleKeyboard: function(e) {
-    switch (e.keyCode) {
-      case App.KeyCodes.enter:
-        e.preventDefault();
-      break;
-      case App.KeyCodes.tab:
-        e.preventDefault();
-        console.log(e);
-        if (e.shiftKey) {
-          this.decreaseIndent();
-        } else {
-          this.increaseIndent();
-        }
-      break;
-      case App.KeyCodes.c:
-        if (e.ctrlKey) {
-          e.preventDefault();
-          this.toggleComplete();
-        }
-      break;
-      case App.KeyCodes.n:
-        if (e.ctrlKey) {
-          e.preventDefault();
-          $('input:focus').closest('li.task-container').next().find('input').focus();
-        }
-      break;
-      case App.KeyCodes.p:
-        if (e.ctrlKey) {
-          e.preventDefault();
-          $('input:focus').closest('li.task-container').prev().find('input').focus();
-        }
-      break;
-    }
-  },
-  increaseIndent: function() {
-    this.$el.find('form').prepend(this.indentTemplate());
-  },
-  decreaseIndent: function() {
-    this.$el.find('span.indent:first').remove();
-  }
 });

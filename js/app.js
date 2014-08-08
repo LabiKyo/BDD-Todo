@@ -1,6 +1,5 @@
 window.App = new (Backbone.View.extend({
   start: function() {
-    this.tasks = new App.Collection.Tasks([{description: 'finish this backbone app'}, {description: 'second task', complete: true}]);
     this.subview = {};
     this.render();
     Backbone.history.start({pushState: true});
@@ -15,9 +14,11 @@ window.App = new (Backbone.View.extend({
   render: function() {
     this.$el.html(this.template());
     this.subview.tasks = new App.View.Tasks({
-      collection: this.tasks,
       el: this.$el.find('#tasks')
     });
+    this.subview.tasks.add(new App.Model.Task({description: 'task1'}));
+    this.subview.tasks.add(new App.Model.Task({description: 'task2', complete: true}));
+    this.subview.tasks.add(new App.Model.Task({description: 'task3'}), this.subview.tasks.rootView.children[0]);
     this.subview.tasks.render();
     return this;
   },
