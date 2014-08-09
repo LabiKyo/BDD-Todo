@@ -1,6 +1,6 @@
 App.View.Tasks = Backbone.View.extend({
   events: {
-    'keydown': 'handleKey'
+    'keydown': 'onKeydown'
   },
   render: function() {
     this.root = new App.Model.Task({
@@ -15,7 +15,11 @@ App.View.Tasks = Backbone.View.extend({
         var childView = this._build(data.children[child]);
         this.rootView.children.push(childView);
         this.root.children.push(childView.model);
+
+        childView.parent = this.rootView;
+        childView.model.parent = this.root;
       }
+      this.rootView.children[0].focus();
     } else {
       this.$el.append(new App.View.NewTask().render().el);
     }
@@ -29,34 +33,38 @@ App.View.Tasks = Backbone.View.extend({
       var childView = this._build(data.children[node]);
       view.children.push(childView);
       model.children.push(childView.model);
+
+      childView.parent = view;
+      childView.model.parent = model;
     }
     return view;
   },
 
-  save: function() {
+  save: function(e) {
     window.localStorage.setItem('tasks', JSON.stringify(this.root.toJSON()));
   },
   load: function() {
     return JSON.parse(window.localStorage.getItem('tasks'));
   },
   reorder: function() {
+    console.log('reorder', this.root);
     for (var node in this.rootView.children) {
-      this._reorder(node);
+      this._reorder(this.rootView.children[node]);
     }
   },
   _reorder: function(parent) {
     this.$el.append(parent.el);
     for (var node in parent.children) {
-      this._reorder(node);
+      this._reorder(parent.children[node]);
     }
   },
 
-  add: function(task, parent) {
+  add: function(task, parent, index) {
     parent = parent || this.rootView;
     var view = new App.View.Task({model: task});
 
-    parent.children.push(view);
-    parent.model.children.push(task);
+    parent.children.splice(index, 0, view);
+    parent.model.children.splice(index, 0, task);
 
     view.parent = parent;
     task.parent = parent.model;
@@ -69,7 +77,17 @@ App.View.Tasks = Backbone.View.extend({
     this.save();
   },
 
-  handleKey: function(e) {
-    console.log(e.target);
+  onKeydown: function(e) {
+    switch (e.keyCode) {
+      case this.KEYCODES.enter:
+        break;
+    }
+  },
+  KEYCODES: {
+    tab: 9,
+    enter: 13,
+    c: 67,
+    n: 78,
+    p: 80
   }
 });
