@@ -8,7 +8,7 @@ App.View.NewTask = Backbone.View.extend({
   events: {
     'submit': 'submit'
   },
-  template: _.template('<form><span class="indent-<%= indent %>"></span><span class="ok"></span><input class="task" type="text" value="" placeholder="What do you want to do next?"/></form>'),
+  template: _.template('<form><span class="indent-<%= indent %>"></span><span class="ok"></span><input autofocus class="task" type="text" value="" placeholder="What do you want to do next?"/></form>'),
   tagName: 'li',
   className: 'task-container',
   render: function() {

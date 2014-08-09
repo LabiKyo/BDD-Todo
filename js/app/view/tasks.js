@@ -1,30 +1,44 @@
 App.View.Tasks = Backbone.View.extend({
-  initialize: function() {
+  events: {
+    'keydown': 'handleKey'
+  },
+  render: function() {
     this.root = new App.Model.Task({
       description: 'root',
       indent: -1,
       complete: false
     });
     this.rootView = new App.View.Task({model: this.root});
-  },
-  events: {
-    'keydown': 'handleKey'
-  },
-  render: function() {
-    for (var node in this.rootView.children) {
-      this.renderNode(this.rootView.children[node]);
-    }
-    if (this.rootView.children.length === 0) {
+    var data = this.load();
+    if (data) {
+      for (var child in data.children) {
+        var childView = this._build(data.children[child]);
+        this.rootView.children.push(childView);
+        this.root.children.push(childView.model);
+      }
+    } else {
       this.$el.append(new App.View.NewTask().render().el);
     }
   },
-  renderNode: function(parent) {
-    this.$el.append(parent.render().el);
-    for (var node in parent.children) {
-      this.renderNode(parent.children[node]);
+  _build: function(data) {
+    var attr = _.omit(data, 'children');
+    var model = new App.Model.Task(attr);
+    var view = new App.View.Task({model: model});
+    this.$el.append(view.render().el);
+    for (var node in data.children) {
+      var childView = this._build(data.children[node]);
+      view.children.push(childView);
+      model.children.push(childView.model);
     }
+    return view;
   },
 
+  save: function() {
+    window.localStorage.setItem('tasks', JSON.stringify(this.root.toJSON()));
+  },
+  load: function() {
+    return JSON.parse(window.localStorage.getItem('tasks'));
+  },
   reorder: function() {
     for (var node in this.rootView.children) {
       this._reorder(node);
@@ -52,6 +66,7 @@ App.View.Tasks = Backbone.View.extend({
     this.$el.append(view.el);
     this.reorder();
     view.focus();
+    this.save();
   },
 
   handleKey: function(e) {
