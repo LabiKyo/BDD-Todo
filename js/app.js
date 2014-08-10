@@ -22,4 +22,11 @@ window.App = new (Backbone.View.extend({
   Model: {},
   Collection: {},
   View: {},
+  KEYCODES: {
+    tab: 9,
+    enter: 13,
+    c: 67,
+    n: 78,
+    p: 80
+  }
 }))({el: document.body});

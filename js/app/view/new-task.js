@@ -18,8 +18,7 @@ App.View.NewTask = App.View.Task.extend({
     e.preventDefault();
     var description = this.$el.find('input').val();
     if (description) {
-      var model = new App.Model.Task({description: description});
-      App.subview.tasks.add(model, this.parent, this.index);
+      App.subview.tasks.add(description, this.parent, this.index);
       this.remove();
     }
   }

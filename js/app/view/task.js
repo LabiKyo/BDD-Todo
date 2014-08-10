@@ -18,12 +18,26 @@ App.View.Task = Backbone.View.extend({
     this.$el.html(this.template(this.model.attributes));
     return this;
   },
-  focus: function() {
-    var input = this.$el.find('input').get(0),
-        length = input.value.length;
-    input.focus();
-    input.setSelectionRange(length, length);
-    return this;
+
+  // event handler
+  submit: function(e) {
+    e.preventDefault();
+    var value = this.$el.find('input').val();
+    if (value) {
+      this.model.set('description', value);
+      App.subview.tasks.save();
+      this.newTask();
+    }
+  },
+  // helper
+  addChild: function(child, index) {
+    index = index || this.children.length;
+    this.children.splice(index, 0, child);
+    child.parent = this;
+
+    this.model.children.splice(index, 0, child.model);
+    child.model.parent = this.model;
+    child.model.set('indent', this.model.get('indent') + 1);
   },
   newTask: function() {
     this.$el.after(new App.View.NewTask({
@@ -32,28 +46,11 @@ App.View.Task = Backbone.View.extend({
       index: this.parent.children.indexOf(this) + 1
     }).render().el);
   },
-  next: function(n) {
-    n = n || 1;
-    var $target = this.$el;
-    _(n).times(function() {
-      $target = $target.next();
-    });
-    return $target;
+  focus: function() {
+    var input = this.$el.find('input').get(0),
+        length = input.value.length;
+    input.focus();
+    input.setSelectionRange(length, length);
+    return this;
   },
-  previous: function(n) {
-    n = n || 1;
-    var $target = this.$el;
-    _(n).times(function() {
-      $target = $target.prev();
-    });
-    return $target;
-  },
-  submit: function(e) {
-    e.preventDefault();
-    this.model.set('description', this.$el.find('input').val());
-    if (this.model.get('description')) {
-      App.subview.tasks.save();
-      this.newTask();
-    }
-  }
 });

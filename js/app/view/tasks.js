@@ -1,7 +1,4 @@
 App.View.Tasks = Backbone.View.extend({
-  events: {
-    'keydown': 'onKeydown'
-  },
   render: function() {
     this.root = new App.Model.Task({
       description: 'root',
@@ -11,13 +8,8 @@ App.View.Tasks = Backbone.View.extend({
     this.rootView = new App.View.Task({model: this.root});
     var data = this.load();
     if (data) {
-      for (var child in data.children) {
-        var childView = this._build(data.children[child]);
-        this.rootView.children.push(childView);
-        this.root.children.push(childView.model);
-
-        childView.parent = this.rootView;
-        childView.model.parent = this.root;
+      for (var i in data.children) {
+        this.rootView.addChild(this._build(data.children[i]));
       }
       this.rootView.children[0].focus();
     } else {
@@ -29,13 +21,8 @@ App.View.Tasks = Backbone.View.extend({
     var model = new App.Model.Task(attr);
     var view = new App.View.Task({model: model});
     this.$el.append(view.render().el);
-    for (var node in data.children) {
-      var childView = this._build(data.children[node]);
-      view.children.push(childView);
-      model.children.push(childView.model);
-
-      childView.parent = view;
-      childView.model.parent = model;
+    for (var i in data.children) {
+      view.addChild(this._build(data.children[i]));
     }
     return view;
   },
@@ -44,50 +31,34 @@ App.View.Tasks = Backbone.View.extend({
     window.localStorage.setItem('tasks', JSON.stringify(this.root.toJSON()));
   },
   load: function() {
-    return JSON.parse(window.localStorage.getItem('tasks'));
+    try {
+      return JSON.parse(window.localStorage.getItem('tasks'));
+    } catch (e) {
+      console.log(e);
+      return null;
+    }
   },
   reorder: function() {
-    console.log('reorder', this.root);
-    for (var node in this.rootView.children) {
-      this._reorder(this.rootView.children[node]);
+    for (var i in this.rootView.children) {
+      this._reorder(this.rootView.children[i]);
     }
+    return this;
   },
   _reorder: function(parent) {
     this.$el.append(parent.el);
-    for (var node in parent.children) {
-      this._reorder(parent.children[node]);
+    for (var i in parent.children) {
+      this._reorder(parent.children[i]);
     }
   },
-
-  add: function(task, parent, index) {
+  add: function(description, parent, index) {
     parent = parent || this.rootView;
-    var view = new App.View.Task({model: task});
+    var model = new App.Model.Task({description: description});
+    var view = new App.View.Task({model: model});
 
-    parent.children.splice(index, 0, view);
-    parent.model.children.splice(index, 0, task);
+    parent.addChild(view, index);
 
-    view.parent = parent;
-    task.parent = parent.model;
-
-    task.set('indent', parent.model.get('indent') + 1);
-    view.render();
-    this.$el.append(view.el);
-    this.reorder();
+    this.$el.append(view.render().el);
     view.focus();
-    this.save();
+    this.reorder().save();
   },
-
-  onKeydown: function(e) {
-    switch (e.keyCode) {
-      case this.KEYCODES.enter:
-        break;
-    }
-  },
-  KEYCODES: {
-    tab: 9,
-    enter: 13,
-    c: 67,
-    n: 78,
-    p: 80
-  }
 });
